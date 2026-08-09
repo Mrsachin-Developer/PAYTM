@@ -1,7 +1,7 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import {
-  createUser,
+  createUserWithWallet,
   findUserByEmail,
   findUserById,
 } from "../repositories/user.repository.js";
@@ -13,15 +13,23 @@ export const signupService = async (
   password: string,
 ) => {
   const existingUser = await findUserByEmail(email);
+
   if (existingUser) {
     throw new Error("User Already exists");
   }
 
   const hashedPassword = await bcrypt.hash(password, 10);
 
-  const user = await createUser(firstName, lastName, email, hashedPassword);
+  const user = await createUserWithWallet(
+    firstName,
+    lastName,
+    email,
+    hashedPassword,
+  );
 
-  return user;
+  const { password: _, ...safeUser } = user;
+
+  return safeUser;
 };
 
 export const loginService = async (email: string, password: string) => {

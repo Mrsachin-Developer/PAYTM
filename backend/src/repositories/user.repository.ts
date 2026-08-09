@@ -6,23 +6,39 @@ export const findUserByEmail = async (email: string) => {
   });
 };
 
-export const createUser = async (
+export const findUserById = async (id: string) => {
+  return prisma.user.findUnique({
+    where: { id },
+  });
+};
+
+export const createUserWithWallet = async (
   firstName: string,
   lastName: string,
   email: string,
   password: string,
 ) => {
-  return prisma.user.create({
-    data: {
-      firstName,
-      lastName,
-      email,
-      password,
+  return prisma.$transaction(
+    async (tx) => {
+      const user = await tx.user.create({
+        data: {
+          firstName,
+          lastName,
+          email,
+          password,
+        },
+      });
+
+      await tx.wallet.create({
+        data: {
+          userId: user.id,
+        },
+      });
+
+      return user;
     },
-  });
-};
-export const findUserById = async (id: string) => {
-  return prisma.user.findUnique({
-    where: { id },
-  });
+    {
+      timeout: 15000,
+    },
+  );
 };
