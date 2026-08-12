@@ -8,12 +8,43 @@ export const createWallet = async (userId: string) => {
   });
 };
 
-
-
 export const findWalletByUserId = async (userId: string) => {
   return prisma.wallet.findUnique({
     where: {
       userId,
+    },
+  });
+};
+
+
+export const incrementWalletBalance = async (
+  userId: string,
+  amount: number,
+) => {
+  return prisma.wallet.update({
+    where: {
+      userId,
+    },
+    data: {
+      balance: {
+        increment: amount,
+      },
+    },
+  });
+};
+
+export const decrementWalletBalance = async (
+  userId: string,
+  amount: number,
+) => {
+  return prisma.wallet.update({
+    where: {
+      userId,
+    },
+    data: {
+      balance: {
+        decrement: amount,
+      },
     },
   });
 };

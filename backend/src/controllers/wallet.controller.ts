@@ -1,16 +1,66 @@
 // wallet.controller.ts
 
-import { Request, Response } from "express";
-import { getWalletService } from "../services/wallet.services.js";
+import { NextFunction, Request, Response } from "express";
+import { amountSchema } from "../validators/wallet.validator.js";
+import {
+  depositMoneyService,
+  getWalletService,
+  withdrawMoneyService,
+} from "../services/wallet.services.js";
 
 export const getWalletController = async (
   req: Request,
-  res: Response
+  res: Response,
+  next: NextFunction,
 ) => {
-  const wallet = await getWalletService(req.userId!);
+  try {
+    const wallet = await getWalletService(req.userId!);
 
-  res.status(200).json({
-    success: true,
-    wallet,
-  });
+    res.status(200).json({
+      success: true,
+      wallet,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const depositMoneyController = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const validateData = amountSchema.parse(req.body);
+
+    const wallet = await depositMoneyService(req.userId!, validateData.amount);
+
+    res.status(200).json({
+      success: true,
+      message: "Money deposited successfully",
+      wallet,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const withdrawMoneyController = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const validateData = amountSchema.parse(req.body);
+
+    const wallet = await withdrawMoneyService(req.userId!, validateData.amount);
+
+    res.status(200).json({
+      success: true,
+      message: "Money withdrawn successfully",
+      wallet,
+    });
+  } catch (error) {
+    next(error);
+  }
 };
