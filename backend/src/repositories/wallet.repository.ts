@@ -16,7 +16,6 @@ export const findWalletByUserId = async (userId: string) => {
   });
 };
 
-
 export const incrementWalletBalance = async (
   userId: string,
   amount: number,
@@ -45,6 +44,14 @@ export const decrementWalletBalance = async (
       balance: {
         decrement: amount,
       },
+    },
+  });
+};
+
+export const findUserByPhone = async (phone: string) => {
+  return prisma.user.findUnique({
+    where: {
+      phone,
     },
   });
 };

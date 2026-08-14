@@ -13,11 +13,11 @@ export const signupController = async (
 ) => {
   try {
     const validatedData = signupSchema.parse(req.body);
-
     const user = await signupService(
       validatedData.firstName,
       validatedData.lastName,
       validatedData.email,
+      validatedData.phone,
       validatedData.password,
     );
 

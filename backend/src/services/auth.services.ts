@@ -4,26 +4,33 @@ import {
   createUserWithWallet,
   findUserByEmail,
   findUserById,
+  findUserByPhone,
 } from "../repositories/user.repository.js";
+import { AppError } from "../utils/AppError.js";
 
 export const signupService = async (
   firstName: string,
   lastName: string,
   email: string,
+  phone: string,
   password: string,
 ) => {
   const existingUser = await findUserByEmail(email);
 
   if (existingUser) {
-    throw new Error("User Already exists");
+    throw new AppError("Email already registered", 409);
   }
-
+  const existingPhone = await findUserByPhone(phone);
+  if (existingPhone) {
+    throw new AppError("Phone number already registered", 409);
+  }
   const hashedPassword = await bcrypt.hash(password, 10);
 
   const user = await createUserWithWallet(
     firstName,
     lastName,
     email,
+    phone,
     hashedPassword,
   );
 

@@ -16,6 +16,7 @@ export const createUserWithWallet = async (
   firstName: string,
   lastName: string,
   email: string,
+  phone: string,
   password: string,
 ) => {
   return prisma.$transaction(
@@ -25,6 +26,7 @@ export const createUserWithWallet = async (
           firstName,
           lastName,
           email,
+          phone,
           password,
         },
       });
@@ -41,4 +43,12 @@ export const createUserWithWallet = async (
       timeout: 15000,
     },
   );
+};
+
+export const findUserByPhone = async (phone: string) => {
+  return prisma.user.findUnique({
+    where: {
+      phone,
+    },
+  });
 };
