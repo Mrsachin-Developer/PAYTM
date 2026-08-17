@@ -11,7 +11,6 @@ export const authMiddleware = (
   next: NextFunction,
 ) => {
   try {
-
     const token = req.cookies.token;
 
     if (!token) {
