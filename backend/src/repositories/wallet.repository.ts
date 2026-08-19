@@ -48,6 +48,26 @@ export const decrementWalletBalance = async (
   });
 };
 
+export const deductBalanceIfSufficient = async (
+  db: any,
+  userId: string,
+  amount: number,
+) => {
+  return db.wallet.updateMany({
+    where: {
+      userId,
+      balance: {
+        gte: amount,
+      },
+    },
+    data: {
+      balance: {
+        decrement: amount,
+      },
+    },
+  });
+};
+
 export const findUserByPhone = async (phone: string) => {
   return prisma.user.findUnique({
     where: {

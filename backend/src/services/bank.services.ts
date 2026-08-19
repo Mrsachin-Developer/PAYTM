@@ -5,6 +5,7 @@ import {
   getBankAccountsByUserId,
 } from "../repositories/bank.repository.js";
 import { AppError } from "../utils/AppError.js";
+
 export const createBankAccountService = async (
   userId: string,
   bankName: string,

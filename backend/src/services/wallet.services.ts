@@ -1,5 +1,8 @@
 import { AppError } from "../utils/AppError.js";
-import { findWalletByUserId } from "../repositories/wallet.repository.js";
+import {
+  deductBalanceIfSufficient,
+  findWalletByUserId,
+} from "../repositories/wallet.repository.js";
 import { prisma } from "../lib/prisma.js";
 import { findUserByPhone } from "../repositories/user.repository.js";
 
@@ -115,20 +118,11 @@ export const sendMoneyService = async (
       throw new AppError("Receiver wallet not found", 404);
     }
 
-    if (Number(senderWallet.balance) < amount) {
+    const result = await deductBalanceIfSufficient(tx, senderUserId, amount);
+
+    if (result.count === 0) {
       throw new AppError("Insufficient balance", 400);
     }
-
-    await tx.wallet.update({
-      where: {
-        userId: senderUserId,
-      },
-      data: {
-        balance: {
-          decrement: amount,
-        },
-      },
-    });
 
     await tx.wallet.update({
       where: {
