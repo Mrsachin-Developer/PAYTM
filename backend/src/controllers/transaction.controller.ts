@@ -8,12 +8,15 @@ export const getTransactionHistoryController = async (
   next: NextFunction,
 ) => {
   try {
-    const { page, limit } = transactionHistoryQuerySchema.parse(req.query);
+    const { page, limit, type } = transactionHistoryQuerySchema.parse(
+      req.query,
+    );
 
     const result = await getTransactionHistoryService({
       userId: req.userId!,
       page,
       limit,
+      ...(type && { type }),
     });
     res.status(200).json({
       success: true,

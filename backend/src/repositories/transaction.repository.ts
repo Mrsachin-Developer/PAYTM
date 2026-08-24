@@ -1,8 +1,9 @@
 import { prisma } from "../lib/prisma.js";
-type GetUserTransactionsParams = {
+type GetTransactionHistoryParams = {
   userId: string;
   page: number;
   limit: number;
+  type?: "DEPOSIT" | "WITHDRAW" | "TRANSFER";
 };
 
 export const transactionRepository = {
@@ -10,10 +11,13 @@ export const transactionRepository = {
     userId,
     page,
     limit,
-  }: GetUserTransactionsParams) {
+    type,
+  }: GetTransactionHistoryParams) {
     const skip = (page - 1) * limit;
     const whereClause = {
       OR: [{ senderId: userId }, { receiverId: userId }],
+
+      ...(type && { type }),
     };
     const [transactions, total] = await Promise.all([
       prisma.transaction.findMany({

@@ -15,6 +15,7 @@ app.get("/health", (req, res) => {
   });
 });
 
+
 app.use("/api/v1/auth", authRoutes);
 app.use("/api/v1/wallet", walletRoutes);
 app.use("/api/v1/bank-accounts", bankRoutes);
