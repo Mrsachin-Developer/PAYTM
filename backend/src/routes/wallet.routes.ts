@@ -6,6 +6,7 @@ import {
   withdrawMoneyController,
   sendMoneyController,
 } from "../controllers/wallet.controller.js";
+import { idempotencyMiddleware } from "../middlewares/idempotency.middleware.js";
 
 const router = Router();
 
@@ -16,5 +17,5 @@ router.get("/", getWalletController);
 router.post("/deposit", depositMoneyController);
 
 router.post("/withdraw", withdrawMoneyController);
-router.post("/send", sendMoneyController);
+router.post("/send", idempotencyMiddleware, sendMoneyController);
 export default router;
