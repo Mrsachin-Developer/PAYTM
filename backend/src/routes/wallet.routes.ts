@@ -8,7 +8,7 @@ import {
 } from "../controllers/wallet.controller.js";
 import { idempotencyMiddleware } from "../middlewares/idempotency.middleware.js";
 import { rateLimitMiddleware } from "../middlewares/rate-limit.middleware.js";
-
+import { backpressureMiddleware } from "../middlewares/backpressure.middleware.js";
 const router = Router();
 
 router.use(authMiddleware);
@@ -21,6 +21,7 @@ router.post("/withdraw", withdrawMoneyController);
 router.post(
   "/send",
   rateLimitMiddleware,
+  backpressureMiddleware,
   idempotencyMiddleware,
   sendMoneyController,
 );
